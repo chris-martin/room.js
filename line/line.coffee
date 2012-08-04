@@ -1,20 +1,34 @@
-$(() ->
+init = ->
 
   log = (x) -> console.log(x)
   atan = Math.atan
 
-  line = $('<div class="line"/>').appendTo('body')
-    .css(
-      top: '300px'
-      left: '100px'
-      width: 400
-    )
+  line = $('<div class="line"/>')
+    .appendTo('body')
+    .css('width', '400px')
+
+  center = undefined
+
+  do ->
+    win = $(window)
+
+    resize = ->
+      center =
+        x: win.width() / 2
+        y: win.height() / 2
+      line.css(
+        left: (center.x - 200) + 'px'
+        top: center.y + 'px'
+      )
+
+    win.resize(resize)
+    resize()
 
   rotate = (el, angle) ->
     $(el).css('-webkit-transform', 'rotate(' + angle + 'rad)')
 
   move = (p) ->
-    angle = atan((p.y - 300) / (p.x - 300))
+    angle = atan((p.y - center.y) / (p.x - center.x))
     rotate(line, angle)
 
   mouse_move = (e) ->
@@ -44,4 +58,4 @@ $(() ->
     touchstart: touch_start
   )
 
-)
+$(init)
