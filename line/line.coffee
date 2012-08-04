@@ -1,4 +1,4 @@
-init = ->
+$(->
 
   log = (x) -> console.log(x)
   atan = Math.atan
@@ -58,4 +58,4 @@ init = ->
     touchstart: touch_start
   )
 
-$(init)
+)
