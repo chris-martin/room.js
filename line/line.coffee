@@ -1,17 +1,21 @@
 $(() ->
 
-  $('<div class="line"/>').appendTo('body')
+  log = (x) -> console.log(x)
+  atan = Math.atan
+
+  line = $('<div class="line"/>').appendTo('body')
     .css(
-      '-webkit-transform': 'rotate(72deg)'
-      top: '200px'
-      left: '400px'
+      top: '300px'
+      left: '100px'
       width: 400
     )
 
-  pos = $('<span/>').appendTo('body')
+  rotate = (el, angle) ->
+    $(el).css('-webkit-transform', 'rotate(' + angle + 'rad)')
 
   move = (p) ->
-    pos.text(p.x + ', ' + p.y)
+    angle = atan((p.y - 300) / (p.x - 300))
+    rotate(line, angle)
 
   mouse_move = (e) ->
     move({ x: e.pageX, y: e.pageY })
@@ -23,17 +27,19 @@ $(() ->
   touch_start = (e) ->
     mouse_move(window.event.touches[0])
 
+  root = $('html')
+
   down = (e) ->
     mouse_move(e)
-    $(e.target).bind('mousemove', mouse_move)
+    root.bind('mousemove', mouse_move)
 
   up = (e) ->
-    $(e.target).unbind('mousemove', mouse_move)
+    root.unbind('mousemove', mouse_move)
 
-  $('html').bind(
+  root.bind(
     mousedown: down
     mouseup: up
-    mouseout: up
+    mouseleave: up
     touchmove: touch_move
     touchstart: touch_start
   )
