@@ -1,13 +1,24 @@
 $(->
 
   log = (x) -> console.log(x)
+
   atan = Math.atan
+  pow = Math.pow
+  sqrt = Math.sqrt
 
-  line = $('<div class="line"/>')
-    .appendTo('body')
-    .css('width', '400px')
+  line = $('<div class="line"/>').appendTo('body')
 
+  refresh = ->
+    line.css(
+      left: (center.x - length / 2) + 'px'
+      top: center.y + 'px'
+      width: length + 'px'
+      '-webkit-transform': 'rotate(' + angle + 'rad)'
+    )
+
+  angle = 1
   center = undefined
+  length = 400
 
   do ->
     win = $(window)
@@ -16,20 +27,20 @@ $(->
       center =
         x: win.width() / 2
         y: win.height() / 2
-      line.css(
-        left: (center.x - 200) + 'px'
-        top: center.y + 'px'
-      )
+      refresh()
 
     win.resize(resize)
     resize()
 
-  rotate = (el, angle) ->
-    $(el).css('-webkit-transform', 'rotate(' + angle + 'rad)')
-
   move = (p) ->
-    angle = atan((p.y - center.y) / (p.x - center.x))
-    rotate(line, angle)
+    delta =
+      x: p.x - center.x
+      y: p.y - center.y
+    angle = atan(delta.y / delta.x)
+    length = 2 * sqrt(
+      pow(delta.x, 2) + pow(delta.y, 2)
+    )
+    refresh()
 
   mouse_move = (e) ->
     move({ x: e.pageX, y: e.pageY })
