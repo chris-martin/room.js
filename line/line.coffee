@@ -18,8 +18,8 @@ $(->
 
   a = inside_x * 1.0
   b = 100.0
-  c = 1000.0
-  d = inside_y * 1.5
+  c = 600.0
+  d = inside_y * 1.0
 
   # alpha and beta are defined such that
   # f(x) = alpha + beta x^2
