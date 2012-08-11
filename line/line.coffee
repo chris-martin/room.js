@@ -23,8 +23,8 @@ $(->
   # alpha and beta are defined such that
   # f(x) = alpha + beta x^2
   # where f(a) = b and f(c) = d
-  beta = (b - d) / (a*a - c*c)
-  alpha = b - beta * a * a
+  beta = (b - d) / (pow(a, 2) - pow(c, 2))
+  alpha = b - beta * pow(a, 2)
 
   refresh = ->
     $length = floor(max(inside_x, length))
