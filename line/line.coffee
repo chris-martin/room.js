@@ -8,6 +8,7 @@ $(->
   min = Math.min
   pow = Math.pow
   sqrt = Math.sqrt
+  pi = Math.PI
 
   line = $('<div class="line"/>').appendTo('body')
     .append(inside = $('<div/>').text('line.js'));
@@ -62,6 +63,7 @@ $(->
       x: p.x - center.x
       y: p.y - center.y
     angle = atan(delta.y / delta.x)
+    angle -= pi if delta.x >= 0
     length = 2 * sqrt(
       pow(delta.x, 2) + pow(delta.y, 2)
     )
