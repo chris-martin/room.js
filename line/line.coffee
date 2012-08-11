@@ -3,17 +3,42 @@ $(->
   log = (x) -> console.log(x)
 
   atan = Math.atan
+  floor = Math.floor
+  max = Math.max
+  min = Math.min
   pow = Math.pow
   sqrt = Math.sqrt
 
   line = $('<div class="line"/>').appendTo('body')
+    .append(inside = $('<div/>').text('line.js'));
+
+  inside_x = inside.outerWidth()
+  inside_y = inside.outerHeight()
+
+  a = inside_x * 1.0
+  b = 100.0
+  c = 1000.0
+  d = inside_y * 1.5
+
+  # alpha and beta are defined such that
+  # f(x) = alpha + beta x^2
+  # where f(a) = b and f(c) = d
+  beta = (b - d) / (a*a - c*c)
+  alpha = b - beta * a * a
 
   refresh = ->
+    $length = floor(max(inside_x, length))
+    thickness = floor(max(d, alpha + beta * pow($length, 2)))
     line.css(
-      left: (center.x - length / 2) + 'px'
-      top: center.y + 'px'
-      width: length + 'px'
+      left: (center.x - $length / 2) - thickness + 'px'
+      top: (center.y - thickness / 2) + 'px'
+      width: $length + 'px'
+      height: thickness + 'px'
       '-webkit-transform': 'rotate(' + angle + 'rad)'
+      'border-width': '0 ' + thickness + 'px'
+    )
+    inside.css(
+      top: (thickness - inside_y) / 2 + 'px'
     )
 
   angle = 1
