@@ -35,7 +35,7 @@ $(->
       top: (center.y - thickness / 2) + 'px'
       width: $length + 'px'
       height: thickness + 'px'
-      '-webkit-transform': 'rotate(' + angle + 'rad)'
+      transform: 'rotate(' + angle + 'rad)'
       'border-width': '0 ' + thickness + 'px'
     )
     inside.css(
