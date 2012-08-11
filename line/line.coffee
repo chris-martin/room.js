@@ -1,18 +1,16 @@
-$(->
+log = (x) -> console.log(x)
 
-  log = (x) -> console.log(x)
+atan = Math.atan
+floor = Math.floor
+max = Math.max
+min = Math.min
+pow = Math.pow
+sqrt = Math.sqrt
+pi = Math.PI
 
-  atan = Math.atan
-  floor = Math.floor
-  max = Math.max
-  min = Math.min
-  pow = Math.pow
-  sqrt = Math.sqrt
-  pi = Math.PI
+refresh_fn = (line, attributes) ->
 
-  line = $('<div class="line"/>').appendTo('body')
-    .append(inside = $('<div/>').text('line.js'));
-
+  inside = line.find('*')
   inside_x = inside.outerWidth()
   inside_y = inside.outerHeight()
 
@@ -27,44 +25,47 @@ $(->
   beta = (b - d) / (pow(a, 2) - pow(c, 2))
   alpha = b - beta * pow(a, 2)
 
-  refresh = ->
-    $length = floor(max(inside_x, length))
-    thickness = floor(max(d, alpha + beta * pow($length, 2)))
+  () ->
+    length = floor(max(inside_x, attributes.length))
+    thickness = floor(max(d, alpha + beta * pow(length, 2)))
     line.css(
-      left: (center.x - $length / 2) - thickness + 'px'
-      top: (center.y - thickness / 2) + 'px'
-      width: $length + 'px'
+      left: (attributes.center.x - length / 2) - thickness + 'px'
+      top: (attributes.center.y - thickness / 2) + 'px'
+      width: length + 'px'
       height: thickness + 'px'
-      transform: 'rotate(' + angle + 'rad)'
+      transform: 'rotate(' + attributes.angle + 'rad)'
       'border-width': '0 ' + thickness + 'px'
     )
     inside.css(
       top: (thickness - inside_y) / 2 + 'px'
     )
 
-  angle = 1
-  center = undefined
-  length = 400
+do ->
 
-  do ->
+  line = $('<div class="line"/>').append(
+    $('<div/>').text('line.js')
+  )
+
+  attributes =
+    angle: 1
+    length: 400
+
+  refresh = undefined
+
+  resize = ->
     win = $(window)
-
-    resize = ->
-      center =
-        x: win.width() / 2
-        y: win.height() / 2
-      refresh()
-
-    win.resize(resize)
-    resize()
+    attributes.center =
+      x: win.width() / 2
+      y: win.height() / 2
+    refresh()
 
   move = (p) ->
     delta =
-      x: p.x - center.x
-      y: p.y - center.y
-    angle = atan(delta.y / delta.x)
-    angle -= pi if delta.x >= 0
-    length = 2 * sqrt(
+      x: p.x - attributes.center.x
+      y: p.y - attributes.center.y
+    attributes.angle = atan(delta.y / delta.x)
+    attributes.angle -= pi if delta.x >= 0
+    attributes.length = 2 * sqrt(
       pow(delta.x, 2) + pow(delta.y, 2)
     )
     refresh()
@@ -79,21 +80,25 @@ $(->
   touch_start = (e) ->
     mouse_move(window.event.touches[0])
 
-  root = $('html')
+  root = () -> $('html')
 
   down = (e) ->
     mouse_move(e)
-    root.bind('mousemove', mouse_move)
+    root().bind('mousemove', mouse_move)
 
   up = (e) ->
-    root.unbind('mousemove', mouse_move)
+    root().unbind('mousemove', mouse_move)
 
-  root.bind(
-    mousedown: down
-    mouseup: up
-    mouseleave: up
-    touchmove: touch_move
-    touchstart: touch_start
+  $(->
+    line.appendTo('body')
+    refresh = refresh_fn(line, attributes)
+    $(window).resize(resize)
+    resize()
+    root().bind(
+      mousedown: down
+      mouseup: up
+      mouseleave: up
+      touchmove: touch_move
+      touchstart: touch_start
+    )
   )
-
-)
