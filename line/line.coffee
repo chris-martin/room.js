@@ -52,6 +52,19 @@ do ->
 
   refresh = undefined
 
+  start_position = undefined
+  start_attributes = undefined
+
+  event_position = (e) ->
+    x: e.pageX
+    y: e.pageY
+
+  start = (e) ->
+    start_position = event_position(e)
+    start_attributes =
+      angle: attributes.angle
+      length: attributes.length
+
   resize = ->
     win = $(window)
     attributes.center =
@@ -71,18 +84,21 @@ do ->
     refresh()
 
   mouse_move = (e) ->
-    move({ x: e.pageX, y: e.pageY })
+    move(event_position(e))
 
   touch_move = (e) ->
     e.preventDefault()
     touch_start(e)
 
-  touch_start = (e) ->
-    mouse_move(window.event.touches[0])
+  touch_start = () ->
+    e = window.event.touches[0]
+    start(e)
+    mouse_move(e)
 
   root = () -> $('html')
 
   down = (e) ->
+    start(e)
     mouse_move(e)
     root().bind('mousemove', mouse_move)
 
